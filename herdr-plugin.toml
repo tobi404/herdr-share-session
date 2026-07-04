@@ -1,0 +1,27 @@
+id = "share-session"
+name = "Share Session (view-only)"
+version = "0.1.0"
+min_herdr_version = "0.7.1"
+
+[[actions]]
+id = "start"
+title = "Start view-only share"
+contexts = ["workspace"]
+command = ["bash", "scripts/start-share.sh"]
+
+[[actions]]
+id = "join"
+title = "Join shared session"
+contexts = ["workspace"]
+command = ["bash", "scripts/join.sh"]
+
+[[actions]]
+id = "stop"
+title = "Stop share"
+contexts = ["workspace"]
+command = ["bash", "scripts/stop-share.sh"]
+
+[[panes]]
+id = "viewer"
+placement = "overlay"
+command = ["bash", "scripts/view-ro.sh"]
