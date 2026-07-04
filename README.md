@@ -3,8 +3,13 @@
 One-click view-only terminal sharing between two Macs, built on tmux.
 
 - **Mac 2** (sharing) clicks **Start view-only share**, then opens the **viewer**
-  pane to watch read-only.
-- **Mac 1** (driver) clicks **Join shared session** to SSH in and drive.
+  tab to watch read-only.
+- **Mac 1** (driver) opens the **Join shared session** tab to SSH in and drive.
+
+`start` and `stop` are actions (fire-and-forget). `viewer` and `join` are
+**panes** (they open in their own tab): both run interactively — attaching a
+tmux session over a PTY — so they need a real terminal, which a background
+action does not have.
 
 herdr has no native sharing; this plugin wraps tmux. Read-only is cooperative
 (`tmux attach -r`), not enforced. You work *inside* the shared session — a shell
@@ -41,9 +46,41 @@ REMOTE_TMUX_BIN=/opt/homebrew/bin/tmux # tmux path on the sharing Mac
 
 ## Use
 
-- Mac 2: **Start view-only share** → open **viewer** pane.
-- Mac 1: **Join shared session**.
+- Mac 2: **Start view-only share** → open the **viewer** tab.
+- Mac 1: open the **Join shared session** tab.
 - Mac 2: **Stop share** when done.
+
+## Hotkeys (optional)
+
+Keybindings are not part of the plugin — they live in each Mac's
+`~/.config/herdr/config.toml` and reference the plugin's actions/panes. Add this
+block (prefix defaults to `ctrl+b`; run `herdr server reload-config` after):
+
+```toml
+[[keys.command]]
+key = "prefix+shift+s"
+type = "plugin_action"
+command = "share-session.start"
+description = "share: start view-only session"
+
+[[keys.command]]
+key = "prefix+shift+v"
+type = "shell"
+command = "bash -lc 'herdr plugin action invoke start --plugin share-session && herdr plugin pane open --plugin share-session --entrypoint viewer --placement tab'"
+description = "share: start (if needed) + open viewer in new tab"
+
+[[keys.command]]
+key = "prefix+shift+e"
+type = "plugin_action"
+command = "share-session.stop"
+description = "share: stop / tear down"
+
+[[keys.command]]
+key = "prefix+shift+j"
+type = "shell"
+command = "herdr plugin pane open --plugin share-session --entrypoint join --placement tab"
+description = "share: join (driver)"
+```
 
 ## Test
 

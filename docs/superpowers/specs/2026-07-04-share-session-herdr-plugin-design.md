@@ -92,12 +92,6 @@ contexts = ["workspace"]
 command = ["bash", "scripts/start-share.sh"]
 
 [[actions]]
-id = "join"
-title = "Join shared session"
-contexts = ["workspace"]
-command = ["bash", "scripts/join.sh"]
-
-[[actions]]
 id = "stop"
 title = "Stop share"
 contexts = ["workspace"]
@@ -106,9 +100,21 @@ command = ["bash", "scripts/stop-share.sh"]
 [[panes]]
 id = "viewer"
 title = "Shared session (read-only)"
-placement = "overlay"
+placement = "tab"
 command = ["bash", "scripts/view-ro.sh"]
+
+[[panes]]
+id = "join"
+title = "Join shared session (drive)"
+placement = "tab"
+command = ["bash", "scripts/join.sh"]
 ```
+
+`start` and `stop` are actions; `viewer` and `join` are **panes**. herdr runs an
+action as a background process with no controlling terminal, but `join` (and
+`viewer`) run `ssh -t … tmux attach` / `tmux attach`, which need a real TTY — as
+an action `join` fails immediately with `open terminal failed: not a terminal`.
+Declaring them as `placement = "tab"` panes gives each its own terminal tab.
 
 (herdr 0.7.1 requires a `title` on every `[[actions]]` and `[[panes]]` block, and
 warns without a top-level `platforms`; both confirmed by `herdr plugin link`.)

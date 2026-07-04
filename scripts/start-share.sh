@@ -14,5 +14,5 @@ fi
 tmux_cmd set-option -g window-size largest
 
 echo "Shared session '$SESSION' is running (detached)."
-echo "Local read-only view: use this plugin's 'viewer' pane (attaches '$VIEW' read-only)."
-echo "Drive it from the other Mac: click 'Join shared session' (host: $SHARE_HOST)."
+echo "Local read-only view: open this plugin's 'viewer' tab (attaches '$VIEW' read-only)."
+echo "Drive it from the other Mac: open the 'Join shared session' tab (host: $SHARE_HOST)."

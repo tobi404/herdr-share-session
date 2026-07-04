@@ -11,12 +11,6 @@ contexts = ["workspace"]
 command = ["bash", "scripts/start-share.sh"]
 
 [[actions]]
-id = "join"
-title = "Join shared session"
-contexts = ["workspace"]
-command = ["bash", "scripts/join.sh"]
-
-[[actions]]
 id = "stop"
 title = "Stop share"
 contexts = ["workspace"]
@@ -27,3 +21,9 @@ id = "viewer"
 title = "Shared session (read-only)"
 placement = "tab"
 command = ["bash", "scripts/view-ro.sh"]
+
+[[panes]]
+id = "join"
+title = "Join shared session (drive)"
+placement = "tab"
+command = ["bash", "scripts/join.sh"]

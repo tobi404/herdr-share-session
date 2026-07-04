@@ -11,15 +11,20 @@ body="$(cat "$man" 2>/dev/null || echo "")"
 assert_contains "$body" 'id = "share-session"'            "manifest id"
 assert_contains "$body" 'min_herdr_version = "0.7.1"'     "min herdr version"
 assert_contains "$body" 'command = ["bash", "scripts/start-share.sh"]' "start action wired"
-assert_contains "$body" 'command = ["bash", "scripts/join.sh"]'        "join action wired"
+assert_contains "$body" 'command = ["bash", "scripts/join.sh"]'        "join pane wired"
 assert_contains "$body" 'command = ["bash", "scripts/stop-share.sh"]'  "stop action wired"
 assert_contains "$body" 'command = ["bash", "scripts/view-ro.sh"]'     "viewer pane wired"
+
+# join and viewer are panes, not actions: they run interactively (ssh/attach) and
+# need a real terminal, which a background action does not have.
+assert_contains "$body" 'id = "join"'   "join declared"
+assert_contains "$body" 'id = "viewer"' "viewer declared"
 
 # herdr 0.7.1 requires a `title` on every [[actions]] AND [[panes]] block — a
 # missing pane title makes the whole manifest fail to load. Guard the count so a
 # dropped title is caught here rather than only at `herdr plugin link` time.
 titles="$(grep -c '^title = ' "$man")"
-assert_eq "4" "$titles" "every action + pane declares a title (3 actions + 1 pane)"
+assert_eq "4" "$titles" "every action + pane declares a title (2 actions + 2 panes)"
 
 # Declare platforms so herdr does not warn about unknown platform support.
 assert_contains "$body" 'platforms = ["macos"]' "platforms declared"
