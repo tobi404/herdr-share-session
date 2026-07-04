@@ -2,9 +2,6 @@
 # common.sh — shared config + tmux/ssh helpers. Sourced by the other scripts.
 set -euo pipefail
 
-# Resolve tmux: explicit override wins, then PATH, then Homebrew fallback.
-TMUX_BIN="${TMUX_BIN:-$(command -v tmux 2>/dev/null || echo /opt/homebrew/bin/tmux)}"
-
 # Optional isolated server socket (tests set this). Empty → tmux default server.
 TMUX_SOCKET="${TMUX_SOCKET:-}"
 
@@ -13,6 +10,10 @@ if [ -n "${HERDR_PLUGIN_CONFIG_DIR:-}" ] && [ -f "${HERDR_PLUGIN_CONFIG_DIR}/con
   # shellcheck disable=SC1091
   . "${HERDR_PLUGIN_CONFIG_DIR}/config.env"
 fi
+
+# Resolve tmux after config: explicit override wins, then PATH, then Homebrew
+# fallback. Resolving here means an empty TMUX_BIN from config re-defaults.
+TMUX_BIN="${TMUX_BIN:-$(command -v tmux 2>/dev/null || echo /opt/homebrew/bin/tmux)}"
 
 SESSION="${SESSION_NAME:-mirror}"          # driver session (Mac 1 attaches here)
 VIEW="${SESSION}-ro"                        # grouped read-only twin (Mac 2 viewer)
