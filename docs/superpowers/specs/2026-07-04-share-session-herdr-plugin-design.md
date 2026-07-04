@@ -48,12 +48,17 @@ directly:
 
 - `mirror`    — the driver session (Mac 1 attaches here).
 - `mirror-ro` — a session created grouped to `mirror` (`tmux new-session -t mirror`).
-  It shares `mirror`'s windows but sizes independently, so Mac 2's viewer never
-  constrains Mac 1's screen. `window-size latest` is set on the driver session.
+  It shares `mirror`'s windows but is attached read-only, so Mac 2's viewer never
+  drives. `window-size largest` is set on the driver session so the shared window
+  is sized to the largest attached client — Mac 1's screen never shrinks below its
+  own size, regardless of attach order or a viewer resize.
 
-Exact option tuning (`window-size`, `aggressive-resize`) is finalized during
-implementation/testing; the intent is fixed: **the read-only viewer must not
-constrain the driver's size.**
+Option tuning was finalized during implementation: `window-size largest` (not the
+tmux default `latest`, which a read-only client can pull toward its own size by
+becoming the most-recently-active client). The intent is fixed: **the read-only
+viewer must not constrain the driver's size.** The tradeoff — if Mac 2's terminal
+is larger than Mac 1's, the window grows to Mac 2 and Mac 1 sees a clipped view —
+is the acceptable direction since Mac 2 is the passive watcher.
 
 ## Components
 
@@ -105,12 +110,12 @@ command = ["bash", "scripts/view-ro.sh"]
 
 ### Script behavior
 
-- **`common.sh`** — sourced by the others. Resolves
-  `TMUX_BIN="${TMUX_BIN:-$(command -v tmux || echo /opt/homebrew/bin/tmux)}"` and
-  sources the optional config file if present. Defines `SESSION` / `VIEW` /
-  `SHARE_HOST` defaults.
+- **`common.sh`** — sourced by the others. Sources the optional config file first,
+  then resolves defaults so an empty override re-defaults:
+  `TMUX_BIN="${TMUX_BIN:-$(command -v tmux || echo /opt/homebrew/bin/tmux)}"`.
+  Defines `SESSION` / `VIEW` / `SHARE_HOST` defaults.
 - **`start-share.sh`** (Mac 2) — if `mirror` is absent, `new-session -d -s mirror`;
-  set `window-size latest`; print the local read-only view command and the
+  set `window-size largest`; print the local read-only view command and the
   Mac-1 join command. Idempotent (safe to click twice).
 - **`view-ro.sh`** (Mac 2 pane) — create `mirror-ro` grouped to `mirror` if
   absent (`new-session -d -s mirror-ro -t mirror`), then
