@@ -19,7 +19,7 @@ else
 fi
 
 ws="$("$TMUX_BIN" -L "$SOCK" show-options -g window-size 2>/dev/null)"
-assert_contains "$ws" "latest" "window-size set to latest"
+assert_contains "$ws" "largest" "window-size set to largest"
 
 # Second run is idempotent: still exactly one 'mirror' session, exit 0.
 bash "$DIR/scripts/start-share.sh" >/dev/null
