@@ -15,6 +15,15 @@ assert_contains "$body" 'command = ["bash", "scripts/join.sh"]'        "join act
 assert_contains "$body" 'command = ["bash", "scripts/stop-share.sh"]'  "stop action wired"
 assert_contains "$body" 'command = ["bash", "scripts/view-ro.sh"]'     "viewer pane wired"
 
+# herdr 0.7.1 requires a `title` on every [[actions]] AND [[panes]] block — a
+# missing pane title makes the whole manifest fail to load. Guard the count so a
+# dropped title is caught here rather than only at `herdr plugin link` time.
+titles="$(grep -c '^title = ' "$man")"
+assert_eq "4" "$titles" "every action + pane declares a title (3 actions + 1 pane)"
+
+# Declare platforms so herdr does not warn about unknown platform support.
+assert_contains "$body" 'platforms = ["macos"]' "platforms declared"
+
 for s in common start-share view-ro stop-share join; do
   if [ -f "$DIR/scripts/$s.sh" ]; then echo "ok: scripts/$s.sh present"; else echo "FAIL: scripts/$s.sh missing"; FAILED=1; fi
 done

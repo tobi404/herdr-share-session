@@ -83,6 +83,7 @@ id = "share-session"
 name = "Share Session (view-only)"
 version = "0.1.0"
 min_herdr_version = "0.7.1"
+platforms = ["macos"]
 
 [[actions]]
 id = "start"
@@ -104,9 +105,13 @@ command = ["bash", "scripts/stop-share.sh"]
 
 [[panes]]
 id = "viewer"
+title = "Shared session (read-only)"
 placement = "overlay"
 command = ["bash", "scripts/view-ro.sh"]
 ```
+
+(herdr 0.7.1 requires a `title` on every `[[actions]]` and `[[panes]]` block, and
+warns without a top-level `platforms`; both confirmed by `herdr plugin link`.)
 
 ### Script behavior
 
