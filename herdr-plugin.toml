@@ -25,5 +25,5 @@ command = ["bash", "scripts/stop-share.sh"]
 [[panes]]
 id = "viewer"
 title = "Shared session (read-only)"
-placement = "overlay"
+placement = "tab"
 command = ["bash", "scripts/view-ro.sh"]
