@@ -21,9 +21,11 @@ already running outside tmux can't be adopted.
 On each Mac:
 
 ```bash
-herdr plugin install <owner>/<repo>      # from GitHub
-# or, for local development:
-herdr plugin link /path/to/this/repo
+herdr plugin install tobi404/herdr-share-session   # from GitHub (private repo:
+                                                   # the Mac must be authed to GitHub)
+# or clone + link locally:
+git clone git@github.com:tobi404/herdr-share-session.git
+herdr plugin link ./herdr-share-session
 ```
 
 ## Configure
